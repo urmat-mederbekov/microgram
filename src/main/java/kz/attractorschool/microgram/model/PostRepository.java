@@ -1,4 +1,6 @@
 package kz.attractorschool.microgram.model;
 
-public interface PostRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface PostRepository extends CrudRepository<Post, String> {
 }

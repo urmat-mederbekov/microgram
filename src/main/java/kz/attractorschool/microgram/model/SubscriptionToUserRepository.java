@@ -1,4 +1,6 @@
 package kz.attractorschool.microgram.model;
 
-public interface SubscriptionToUserRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface SubscriptionToUserRepository extends CrudRepository<SubscriptionToUser, String> {
 }

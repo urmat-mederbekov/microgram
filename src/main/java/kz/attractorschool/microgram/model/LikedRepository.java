@@ -1,4 +1,7 @@
 package kz.attractorschool.microgram.model;
 
-public interface LikedRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface LikedRepository extends CrudRepository<Liked, String> {
 }
+
