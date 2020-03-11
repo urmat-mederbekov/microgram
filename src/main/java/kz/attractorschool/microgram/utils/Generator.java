@@ -42,7 +42,7 @@ public final class Generator {
             randomAmount = 1;
         }
 
-        var wordCount = r.nextInt(randomAmount)+min;
+        var wordCount = r.nextInt(randomAmount) + min;
         if (wordCount < 1) {
             wordCount = 1;
         }
@@ -51,11 +51,11 @@ public final class Generator {
         if (gibberish.endsWith(",")) {
             gibberish = gibberish.substring(0, gibberish.length() - 2);
         }
-        return  gibberish.endsWith(".") ? gibberish : gibberish + ".";
+        return gibberish.endsWith(".") ? gibberish : gibberish + ".";
     }
 
     public static String makeName() {
-        return makeGibberish(3,2);
+        return makeGibberish(3, 2);
     }
 
     private static String takeOneWord() {
@@ -63,15 +63,16 @@ public final class Generator {
     }
 
     static final Pattern removeExtra = Pattern.compile("[.,;]+?");
+
     public static String makeEmail() {
-        var prefix = removeExtra.matcher(makeGibberish(2,0)).replaceAll("").toLowerCase();
-        var suffix = removeExtra.matcher(makeGibberish(2,0)).replaceAll("").toLowerCase();
-        var email =  prefix + "@" + suffix;
+        var prefix = removeExtra.matcher(makeGibberish(2, 0)).replaceAll("").toLowerCase();
+        var suffix = removeExtra.matcher(makeGibberish(2, 0)).replaceAll("").toLowerCase();
+        var email = prefix + "@" + suffix;
         return email.replace(" ", "");
     }
 
     public static String makePassword() {
-        return removeExtra.matcher(makeGibberish(0,1))
+        return removeExtra.matcher(makeGibberish(0, 1))
                 .replaceAll("")
                 .replace(" ", "");
     }
