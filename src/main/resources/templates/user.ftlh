@@ -40,14 +40,6 @@
         <div class="column">
             ${user.numOfFollowings!""}
         </div>
-        <div class="column">
-            <#list user.posts as post>
-                <div>${post.image!""}</div>
-                <div>${post.description!""}</div>
-                <div>${post.dateTime!""}</div>
-                <div>${post.numOfLikes!""}</div>
-            </#list>
-        </div>
     </div>
     <div class="table flex flex-col">
         <div class="header flex">
