@@ -20,20 +20,23 @@ public class Post {
     @Id
     private String id;
     private String image;
-//    @Indexed
     private String description;
     private LocalDateTime dateTime = LocalDateTime.now();
     private static List<Post> posts = makePosts();
+//    @Indexed
+    private int numOfLikes;
     @DBRef
     private List<Like> likes = new LinkedList<>();
 
     public Post(String image, String description, LocalDateTime dateTime) {
-        this.id =  UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
         this.image = image;
         this.description = description;
         this.dateTime = dateTime;
+        this.numOfLikes = getLikes().size();
     }
-    private static List<Post> makePosts(){
+
+    private static List<Post> makePosts() {
         List<Post> posts = new LinkedList<>();
         LocalDateTime dateTime = LocalDateTime.now();
         posts.add(new Post("", Generator.makeDescription(), dateTime));
@@ -41,11 +44,16 @@ public class Post {
         posts.add(new Post("", Generator.makeDescription(), dateTime.minusMinutes(5)));
         return posts;
     }
-    public static List<Post> getPosts(){
+
+    public static List<Post> getPosts() {
         return posts;
     }
-    public void addLike(Like like){
+
+    public void addLike(Like like) {
         getLikes().add(like);
         setLikes(getLikes());
+    }
+    public void updateNumOfLikes(){
+        this.numOfLikes = getLikes().size();
     }
 }
