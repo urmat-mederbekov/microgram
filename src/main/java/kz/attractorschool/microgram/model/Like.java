@@ -22,21 +22,22 @@ public class Like {
     private static List<Like> likes = makeLikes();
 
     public Like(String user, String post, LocalDateTime dateTime) {
-        this.id =  UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
         this.user = user;
         this.post = post;
         this.dateTime = dateTime;
     }
-    private static List<Like> makeLikes(){
+
+    private static List<Like> makeLikes() {
         LocalDateTime dateTime = LocalDateTime.now();
         List<Like> likes = new LinkedList<>();
         likes.add(new Like(User.getUsers().get(2).getAccountName(), Post.getPosts().get(1).getDescription(), dateTime.minusDays(4)));
         likes.add(new Like(User.getUsers().get(3).getAccountName(), Post.getPosts().get(2).getDescription(), dateTime.minusDays(2)));
         likes.add(new Like(User.getUsers().get(3).getAccountName(), Post.getPosts().get(1).getDescription(), dateTime.minusDays(3)));
-        return  likes;
+        return likes;
     }
 
-    public static List<Like> getLikes(){
+    public static List<Like> getLikes() {
         return likes;
     }
 }
