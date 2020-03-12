@@ -3,6 +3,7 @@ package kz.attractorschool.microgram.model;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -15,9 +16,11 @@ public class Comment {
 
     @Id
     private String id;
+    @Indexed
     private String path = null;
     private String text;
     private LocalDateTime dateTime;
+    @Indexed
     private String userName;
 
     public Comment(String text, LocalDateTime dateTime, String userName) {

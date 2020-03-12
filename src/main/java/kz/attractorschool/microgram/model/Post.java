@@ -23,7 +23,7 @@ public class Post {
     private String description;
     private LocalDateTime dateTime = LocalDateTime.now();
     private static List<Post> posts = makePosts();
-//    @Indexed
+    @Indexed
     private int numOfLikes;
     @DBRef
     private List<Like> likes = new LinkedList<>();

@@ -2,6 +2,8 @@ package kz.attractorschool.microgram.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -16,7 +18,9 @@ public class Like {
 
     @Id
     private String id;
+    @Indexed
     private String user;
+    @Indexed
     private String post;
     private LocalDateTime dateTime;
     private static List<Like> likes = makeLikes();
