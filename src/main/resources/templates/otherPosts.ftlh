@@ -24,10 +24,31 @@
                 <div class="column">
                     <a href="/users/user?userId=${user.id}" rel="link" methods="post">${user.accountName}</a>
                 </div>
+
+            </div>
+
+            <div class="header flex">
                 <div class="column">
-                    ${user.email}
+                    Image
+                </div>
+                <div class="column">
+                    Description
+                </div>
+                <div class="column">
+                    Date
+                </div>
+                <div class="column">
+                    Likes
                 </div>
             </div>
+            <#list user.posts as post>
+                <div class="row ${post?item_parity}  flex">
+                    <div class="column">${post.image!""}</div>
+                    <div class="column">${post.description!""}</div>
+                    <div class="column">${post.dateTime!""}</div>
+                    <div class="column">${post.numOfLikes!""}</div>
+                </div>
+            </#list>
         </#list>
     </div>
 </div>
