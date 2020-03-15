@@ -52,6 +52,7 @@ public class Post {
     public void addLike(Like like) {
         getLikes().add(like);
         setLikes(getLikes());
+        updateNumOfLikes();
     }
     public void updateNumOfLikes(){
         this.numOfLikes = getLikes().size();
