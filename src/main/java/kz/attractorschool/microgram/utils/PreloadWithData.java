@@ -45,7 +45,7 @@ public class PreloadWithData {
         User.getUsers().get(0).addPost(post1);
 
         User.getUsers().get(2).addFollowers(User.getUsers().get(4));
-//        User.getUsers().get(4).addFollowings(User.getUsers().get(2));
+//        User.getUsers().get(0).addFollowings(User.getUsers().get(2));
 //        User.subscribe(0,2);
 
         User.getUsers().get(0).addFollowers(User.getUsers().get(1));
