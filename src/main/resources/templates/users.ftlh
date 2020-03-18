@@ -22,7 +22,7 @@
         <#list users as user>
             <div class="row ${user?item_parity} flex">
                 <div class="column">
-                    <a href="/users/user?userId=${user.id}" rel="link" methods="post">${user.accountName}</a>
+                    <a href="/users/user?userId=${user.id}" rel="link" methods="post">${user.username}</a>
                 </div>
                 <div class="column">
                     ${user.email}

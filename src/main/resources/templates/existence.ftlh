@@ -13,14 +13,11 @@
     <div class="table flex flex-col">
         <div class="header flex">
             <div class="column">
-                Existence: ${isExist?c}
+                ${isExist}
             </div>
 
         </div>
-<#--        <div class="row flex">-->
-<#--            <div class="column">-->
-<#--                ${user.accountName!""}-->
-
+    </div>
 </div>
 </body>
 </html>
