@@ -1,93 +1,62 @@
 package kz.attractorschool.microgram.controller;
 
-import kz.attractorschool.microgram.model.User;
-import kz.attractorschool.microgram.repository.UserRepo;
-import org.hibernate.validator.constraints.EAN;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import kz.attractorschool.microgram.annotations.ApiPageable;
+import kz.attractorschool.microgram.dto.UserDTO;
+import kz.attractorschool.microgram.service.UserService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Controller
+@RestController
+@RequestMapping("/users")
 public class UserController {
 
-    Sort sort = Sort.by(Sort.Order.asc("accountName"));
+    private final UserService userService;
 
-    private final UserRepo userRepo;
-
-    public UserController(UserRepo userRepo) {
-        this.userRepo = userRepo;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping("/")
-    public String homeGet() {
-        return "home";
-    }
-    @GetMapping("/home")
-    public String homeGet2() {
-        return "home";
+    @ApiPageable
+    @GetMapping
+    public Slice<UserDTO> findUsers(@ApiIgnore Pageable pageable) {
+        return userService.findUsers(pageable);
     }
 
-    @GetMapping("/hello")
-    public String hellGet() {
-        return "hello";
-    }
-    @GetMapping("/login")
-    public String loginGet() {
-        return "login";
-    }
-    @GetMapping("/users/name/{name}")
-    public String getUserByName(@PathVariable("name") String name, Model model) {
-        model.addAttribute("users", userRepo.findAllByAccountName(name, sort));
-        return "users";
-    }
-    @GetMapping("/users/otherpost/{name}")
-    public String getUserByNameExceptYou(@PathVariable("name") String name, Model model) {
-        model.addAttribute("users", userRepo.findAllByAccountNameNotContains(name, sort));
-        return "otherPosts";
-    }
-    @GetMapping("/users/explore/{name}")
-    public String getFollowingsPost(@PathVariable("name") String name,Model model) {
-        System.out.println("explore");
-//        List<User> x = User.getUsers()
-//                .stream()
-//                .filter(user -> user.isLoggedIn() != true)
-//                .collect(Collectors.toList());
-//        for(User user: User.getUsers()){
-//            for(User user1: user.getFollowers()){
-//                if (user1.equals(name)){
-//                    var x =
-//                }
-//            }
-//        }
-        model.addAttribute("users", userRepo.findAllByAccountName(name, sort));
-        return "otherPosts";
-    }
-    @GetMapping("/users/email/{email}")
-    public String getUserByEmail(@PathVariable("email") String email, Model model) {
-        Sort sort = Sort.by(Sort.Order.asc("email"));
-        model.addAttribute("users", userRepo.findAllByEmail(email, sort));
-        return "users";
-    }
-    @GetMapping("/users/exist/{email}")
-    public String checkUserExistenceByEmail(@PathVariable("email") String email, Model model) {
-        model.addAttribute("isExist", userRepo.existsUserByEmail(email));
-        return "existence";
+    @ApiPageable
+    @GetMapping("/other-users/{username}")
+    public Slice<UserDTO> findOtherUsers(@ApiIgnore Pageable pageable, @PathVariable String username) {
+        return userService.findOtherUsers(pageable, username);
     }
 
-    @GetMapping("/users")
-    public String usersGet(Model model) {
-        model.addAttribute("users", User.getUsers());
-        return "users";
+    @GetMapping("/username/{username}")
+    public UserDTO findUserByUsername(@PathVariable String username) {
+        return userService.findUserByUsername(username);
     }
-    @GetMapping("users/user")
-    public String userGet(@RequestParam("userId") String userId, Model model) {
-        User user = userRepo.findById(userId).orElse(User.EMPTY);
 
-        model.addAttribute("user", user);
-        return "user";
+    @GetMapping("/email/{email}")
+    public UserDTO findUserByEmail(@PathVariable String email) {
+        return userService.findUserByEmail(email);
+    }
+
+    @GetMapping("/email/exist/{email}")
+    public String existUserByEmail(@PathVariable String email) {
+        return userService.existsUserByEmail(email);
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/add")
+    public UserDTO addUser(@RequestBody UserDTO userData) {
+        return userService.addUser(userData);
+    }
+
+    @DeleteMapping("/delete/{username}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
+        if (userService.deleteUser(username))
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.notFound().build();
     }
 }
