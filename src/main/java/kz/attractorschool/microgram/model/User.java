@@ -1,26 +1,28 @@
 package kz.attractorschool.microgram.model;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @Document(collection = "users")
 @Data
-//@CompoundIndex(def = "{'accountName': 1. 'email': 1}")
 public class User {
     public static final User EMPTY = new User("No one", "none@gmail.com", "nothing");
 
     @Id
     private String id;
     @Indexed
-    private String accountName;
+    private String username;
     @Indexed
     private String email;
     private String password;
@@ -28,23 +30,22 @@ public class User {
     private int numOfFollowers;
     private int numOfFollowings;
     private static List<User> users = makeUsers();
-    private boolean loggedIn = false;
 
 
     @DBRef
-    private List<User> followings = new LinkedList<>();
+    private List<User> followings = new ArrayList<>();
 
     @DBRef
-    private List<User> followers = new LinkedList<>();
+    private List<User> followers = new ArrayList<>();
 
 
 
     @DBRef
-    private List<Post> posts = new LinkedList<>();
+    private List<Post> posts = new ArrayList<>();
 
-    public User(String accountName, String email, String password) {
+    public User(String username, String email, String password) {
         this.id = UUID.randomUUID().toString();
-        this.accountName = accountName;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.numOfPosts = getPosts().size();
@@ -67,7 +68,7 @@ public class User {
     }
     public static  void subscribe(int follower, int following){
         User.getUsers().get(following).addFollowers(User.getUsers().get(follower));
-//        User.getUsers().get(follower).addFollowings(User.getUsers().get(following));
+        User.getUsers().get(follower).addFollowings(User.getUsers().get(following));
     }
 
     public void addPost(Post newPost) {

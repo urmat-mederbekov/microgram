@@ -2,7 +2,6 @@ package kz.attractorschool.microgram.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,7 +12,6 @@ import java.util.UUID;
 
 @Document(collection = "likes")
 @Data
-//@CompoundIndex(def = "{'user': 1. 'post': 1}")
 public class Like {
 
     @Id
@@ -35,9 +33,9 @@ public class Like {
     private static List<Like> makeLikes() {
         LocalDateTime dateTime = LocalDateTime.now();
         List<Like> likes = new LinkedList<>();
-        likes.add(new Like(User.getUsers().get(2).getAccountName(), Post.getPosts().get(1).getDescription(), dateTime.minusDays(4)));
-        likes.add(new Like(User.getUsers().get(3).getAccountName(), Post.getPosts().get(2).getDescription(), dateTime.minusDays(2)));
-        likes.add(new Like(User.getUsers().get(3).getAccountName(), Post.getPosts().get(1).getDescription(), dateTime.minusDays(3)));
+        likes.add(new Like(User.getUsers().get(2).getUsername(), Post.getPosts().get(1).getDescription(), dateTime.minusDays(4)));
+        likes.add(new Like(User.getUsers().get(3).getUsername(), Post.getPosts().get(2).getDescription(), dateTime.minusDays(2)));
+        likes.add(new Like(User.getUsers().get(3).getUsername(), Post.getPosts().get(1).getDescription(), dateTime.minusDays(3)));
         return likes;
     }
 

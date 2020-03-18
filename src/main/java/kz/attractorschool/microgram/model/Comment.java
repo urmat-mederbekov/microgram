@@ -11,7 +11,6 @@ import java.util.UUID;
 
 @Document(collection = "comments")
 @Data
-//@CompoundIndex(def = "{'path': 1. 'userName': 1}")
 public class Comment {
 
     @Id

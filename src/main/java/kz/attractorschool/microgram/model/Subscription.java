@@ -1,6 +1,6 @@
 package kz.attractorschool.microgram.model;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,6 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @Document(collection = "subscriptions")
 @Data
 public class Subscription {
