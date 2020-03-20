@@ -15,7 +15,7 @@ public class SubscriptionController {
         this.subscriptionService = subscriptionService;
     }
 
-    @PostMapping("/add/{follower}/{following}")
+    @PostMapping("/add/{followerName}/{followingName}")
     public SubscriptionDto addUser(@PathVariable String followerName, @PathVariable String followingName) {
         return subscriptionService.addSubscription(followerName, followingName);
     }
