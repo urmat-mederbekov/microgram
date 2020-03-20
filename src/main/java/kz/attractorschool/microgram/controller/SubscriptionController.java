@@ -1,9 +1,8 @@
 package kz.attractorschool.microgram.controller;
 
-import kz.attractorschool.microgram.dto.SubscriptionDto;
-import kz.attractorschool.microgram.dto.UserDTO;
+import kz.attractorschool.microgram.dto.SubscriptionDTO;
 import kz.attractorschool.microgram.service.SubscriptionService;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,10 +15,15 @@ public class SubscriptionController {
         this.subscriptionService = subscriptionService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/add/{follower}/{following}")
-    public SubscriptionDto addUser(@RequestBody SubscriptionDto subscriptionData,
-                           @PathVariable String follower,
-                           @PathVariable String following) {
-        return subscriptionService.addSubscription(subscriptionData, follower, following);
+    @PostMapping("/add/{follower}/{following}")
+    public SubscriptionDTO addUser(@PathVariable String followerName, @PathVariable String followingName) {
+        return subscriptionService.addSubscription(followerName, followingName);
+    }
+    @DeleteMapping("/delete/{subscriptionId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String subscriptionId) {
+        if (subscriptionService.deleteSubscription(subscriptionId))
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.notFound().build();
     }
 }
