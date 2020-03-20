@@ -1,15 +1,17 @@
 package kz.attractorschool.microgram.model;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @Document(collection = "likes")
 @Data
 public class Like {
@@ -17,29 +19,15 @@ public class Like {
     @Id
     private String id;
     @Indexed
-    private String user;
-    @Indexed
-    private String post;
+    private User liker;
+    @DBRef
+    private Post post;
     private LocalDateTime dateTime;
-    private static List<Like> likes = makeLikes();
 
-    public Like(String user, String post, LocalDateTime dateTime) {
+    public Like(User liker, Post post) {
         this.id = UUID.randomUUID().toString();
-        this.user = user;
+        this.liker = liker;
         this.post = post;
-        this.dateTime = dateTime;
-    }
-
-    private static List<Like> makeLikes() {
-        LocalDateTime dateTime = LocalDateTime.now();
-        List<Like> likes = new LinkedList<>();
-        likes.add(new Like(User.getUsers().get(2).getUsername(), Post.getPosts().get(1).getDescription(), dateTime.minusDays(4)));
-        likes.add(new Like(User.getUsers().get(3).getUsername(), Post.getPosts().get(2).getDescription(), dateTime.minusDays(2)));
-        likes.add(new Like(User.getUsers().get(3).getUsername(), Post.getPosts().get(1).getDescription(), dateTime.minusDays(3)));
-        return likes;
-    }
-
-    public static List<Like> getLikes() {
-        return likes;
+        this.dateTime = LocalDateTime.now();
     }
 }

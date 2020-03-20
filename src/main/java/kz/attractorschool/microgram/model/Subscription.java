@@ -2,12 +2,10 @@ package kz.attractorschool.microgram.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -18,28 +16,28 @@ import java.util.UUID;
 public class Subscription {
     @Id
     private String id;
-    @Indexed
+    @DBRef
     private User following;
-    @Indexed
+    @DBRef
     private User follower;
     private LocalDateTime dateTime;
-    private static List<Subscription> subscriptions = makeSubscription();
+//    private static List<Subscription> subscriptions = makeSubscription();
 
-    public Subscription(User follower, User following, LocalDateTime dateTime) {
+    public Subscription(User follower, User following) {
         this.id = UUID.randomUUID().toString();
         this.following = following;
         this.follower = follower;
-        this.dateTime = dateTime;
+        this.dateTime = LocalDateTime.now();
     }
-    private static List<Subscription> makeSubscription(){
-        List<Subscription> subscriptions = new LinkedList<>();
-        subscriptions.add(new Subscription(User.getUsers().get(0), User.getUsers().get(2), LocalDateTime.now().minusDays(3)));
-        subscriptions.add(new Subscription(User.getUsers().get(1), User.getUsers().get(3), LocalDateTime.now().minusDays(9)));
-        subscriptions.add(new Subscription(User.getUsers().get(0), User.getUsers().get(3), LocalDateTime.now().minusYears(1)));
-
-        return subscriptions;
-    }
-    public static List<Subscription> getSubscriptions(){
-        return subscriptions;
-    }
+//    private static List<Subscription> makeSubscription(){
+//        List<Subscription> subscriptions = new LinkedList<>();
+////        subscriptions.add(new Subscription(User.getUsers().get(0), User.getUsers().get(2), LocalDateTime.now().minusDays(3)));
+////        subscriptions.add(new Subscription(User.getUsers().get(1), User.getUsers().get(3), LocalDateTime.now().minusDays(9)));
+////        subscriptions.add(new Subscription(User.getUsers().get(0), User.getUsers().get(3), LocalDateTime.now().minusYears(1)));
+//
+//        return subscriptions;
+//    }
+//    public static List<Subscription> getSubscriptions(){
+//        return subscriptions;
+//    }
 }

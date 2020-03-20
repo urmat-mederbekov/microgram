@@ -8,8 +8,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -24,40 +22,17 @@ public class Post {
     private String id;
     private String image;
     private String description;
-    private LocalDateTime dateTime = LocalDateTime.now();
-    private static List<Post> posts = makePosts();
+    private LocalDateTime dateTime;
     @Indexed
     private int numOfLikes;
     @DBRef
-    private List<Like> likes = new LinkedList<>();
+    private User user;
 
-    public Post(String image, String description, LocalDateTime dateTime) {
+    public Post(String image, String description, User user) {
         this.id = UUID.randomUUID().toString();
         this.image = image;
         this.description = description;
-        this.dateTime = dateTime;
-        this.numOfLikes = getLikes().size();
-    }
-
-    private static List<Post> makePosts() {
-        List<Post> posts = new LinkedList<>();
-        LocalDateTime dateTime = LocalDateTime.now();
-        posts.add(new Post("", Generator.makeDescription(), dateTime));
-        posts.add(new Post("", Generator.makeDescription(), dateTime.minusDays(4)));
-        posts.add(new Post("", Generator.makeDescription(), dateTime.minusMinutes(5)));
-        return posts;
-    }
-
-    public static List<Post> getPosts() {
-        return posts;
-    }
-
-    public void addLike(Like like) {
-        getLikes().add(like);
-        setLikes(getLikes());
-        updateNumOfLikes();
-    }
-    public void updateNumOfLikes(){
-        this.numOfLikes = getLikes().size();
+        this.dateTime = LocalDateTime.now();
+        this.user = user;
     }
 }
