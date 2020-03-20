@@ -1,6 +1,6 @@
 package kz.attractorschool.microgram.controller;
 
-import kz.attractorschool.microgram.dto.SubscriptionDTO;
+import kz.attractorschool.microgram.dto.SubscriptionDto;
 import kz.attractorschool.microgram.service.SubscriptionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class SubscriptionController {
     }
 
     @PostMapping("/add/{follower}/{following}")
-    public SubscriptionDTO addUser(@PathVariable String followerName, @PathVariable String followingName) {
+    public SubscriptionDto addUser(@PathVariable String followerName, @PathVariable String followingName) {
         return subscriptionService.addSubscription(followerName, followingName);
     }
     @DeleteMapping("/delete/{subscriptionId}")

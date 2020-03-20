@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-public class SubscriptionDTO {
+public class SubscriptionDto {
 
-    public static SubscriptionDTO from(Subscription subscription){
+    public static SubscriptionDto from(Subscription subscription){
         return builder()
                 .id(subscription.getId())
                 .follower(subscription.getFollower())

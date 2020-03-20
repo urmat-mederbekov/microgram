@@ -1,6 +1,6 @@
 package kz.attractorschool.microgram.service;
 
-import kz.attractorschool.microgram.dto.SubscriptionDTO;
+import kz.attractorschool.microgram.dto.SubscriptionDto;
 import kz.attractorschool.microgram.exception.ResourceNotFoundException;
 import kz.attractorschool.microgram.model.Subscription;
 import kz.attractorschool.microgram.model.User;
@@ -19,7 +19,7 @@ public class SubscriptionService {
         this.subscriptionRepo = subscriptionRepo;
         this.userRepo = userRepo;
     }
-    public SubscriptionDTO addSubscription(String followerName, String followingName){
+    public SubscriptionDto addSubscription(String followerName, String followingName){
         User follower = userRepo.findByUsername(followerName)
                 .orElseThrow(() -> new ResourceNotFoundException("Can't find user with the name: " + followerName));
 
@@ -35,7 +35,7 @@ public class SubscriptionService {
 
         subscriptionRepo.save(subscription);
 
-        return SubscriptionDTO.from(subscription);
+        return SubscriptionDto.from(subscription);
     }
 
     public boolean deleteSubscription(String subscriptionId) {
