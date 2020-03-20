@@ -1,84 +1,84 @@
 package kz.attractorschool.microgram.utils;
 
 import kz.attractorschool.microgram.model.*;
-import kz.attractorschool.microgram.repository.LikeRepo;
-import kz.attractorschool.microgram.repository.PostRepo;
-import kz.attractorschool.microgram.repository.SubscriptionRepo;
-import kz.attractorschool.microgram.repository.UserRepo;
+import kz.attractorschool.microgram.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Configuration
 public class PreloadWithData {
 
     @Bean
-    CommandLineRunner initLikedDatabase(LikeRepo likeRep) {
-        likeRep.deleteAll();
+    CommandLineRunner initDatabase(UserRepo userRep, PostRepo postRep, CommentRepo commentRepo,
+                                   LikeRepo likeRepo, SubscriptionRepo subscriptionRepo) {
 
-        Post.getPosts().get(2).addLike(Like.getLikes().get(0));
-        Post.getPosts().get(1).addLike(Like.getLikes().get(2));
-        return (args) -> Stream.of(Like.getLikes())
-                .peek(likes -> likes.forEach(System.out::println))
-                .forEach(likeRep::saveAll);
+        return (args) -> {
+            userRep.deleteAll();
+            postRep.deleteAll();
+            likeRepo.deleteAll();
+            subscriptionRepo.deleteAll();
+            commentRepo.deleteAll();
+
+            Stream.of(makeComments())
+                    .peek(comments -> comments.forEach(System.out::println))
+                    .forEach(commentRepo::saveAll);
+            Stream.of(makeSubscriptions())
+                    .peek(subscriptions -> subscriptions.forEach(System.out::println))
+                    .forEach(subscriptionRepo::saveAll);
+            Stream.of(makeLikes())
+                    .peek(likes -> likes.forEach(System.out::println))
+                    .forEach(likeRepo::saveAll);
+            Stream.of(makeUsers())
+                    .peek(users -> users.forEach(System.out::println))
+                    .forEach(userRep::saveAll);
+            Stream.of((makePosts()))
+                    .peek(posts -> posts.forEach(System.out::println))
+                    .forEach(postRep::saveAll);
+        };
     }
 
-    @Bean
-    CommandLineRunner initPostDatabase(PostRepo postRep) {
-        postRep.deleteAll();
-
-//        Post.getPosts().stream().forEach(Post::updateNumOfLikes);
-
-        return (args) -> Stream.of((Post.getPosts()))
-                .peek(posts -> posts.forEach(System.out::println))
-                .forEach(postRep::saveAll);
+    private List<User> makeUsers() {
+        List<User> users = new ArrayList<>();
+        users.add(new User("thanos", "thanos@gmail.com", "thanos"));
+        users.add(new User("loki", "loki@gmail.com", "loki"));
+        users.add(new User("thor", "thor@gmail.com", "thor"));
+        users.add(new User("batman", "batman@gmail.com", "batman"));
+        users.add(new User("superman", "superman@gmail.com", "superman"));
+        return users;
     }
 
-    @Bean
-    CommandLineRunner initUserDatabase(UserRepo userRep) {
-        userRep.deleteAll();
-        Post post = Post.getPosts().get(2);
-        User.getUsers().get(0).addPost(post);
-        Post post1 = Post.getPosts().get(1);
-        User.getUsers().get(0).addPost(post1);
-
-        User.getUsers().get(2).addFollowers(User.getUsers().get(4));
-//        User.getUsers().get(0).addFollowings(User.getUsers().get(2));
-//        User.subscribe(0,2);
-
-        User.getUsers().get(0).addFollowers(User.getUsers().get(1));
-//        User.getUsers().get(1).addFollowings(User.getUsers().get(0));
-//        User.subscribe(1,3);
-////
-        User.getUsers().get(3).addFollowers(User.getUsers().get(4));
-//        User.getUsers().get(4).addFollowings(User.getUsers().get(3));
-//        User.subscribe(3,0);
-        User.getUsers().get(3).addFollowers(User.getUsers().get(0));
-//        User.getUsers().get(0).addFollowings(User.getUsers().get(3));
-//        User.subscribe(0,4);
-
-        return (args) -> Stream.of(User.getUsers())
-                .peek(users -> users.forEach(System.out::println))
-                .forEach(userRep::saveAll);
+    private List<Post> makePosts() {
+        List<Post> posts = new ArrayList<>();
+        posts.add(new Post("", Generator.makeDescription(), makeUsers().get(1)));
+        posts.add(new Post("", Generator.makeDescription(), makeUsers().get(0)));
+        posts.add(new Post("", Generator.makeDescription(), makeUsers().get(4)));
+        return posts;
+    }
+    private List<Like> makeLikes() {
+        List<Like> likes = new ArrayList<>();
+        likes.add(new Like(makeUsers().get(2), makePosts().get(1)));
+        likes.add(new Like(makeUsers().get(3), makePosts().get(2)));
+        likes.add(new Like(makeUsers().get(3), makePosts().get(1)));
+        return likes;
     }
 
-    @Bean
-    CommandLineRunner initSubscriptionDatabase(SubscriptionRepo subscriptionRepo) {
-        subscriptionRepo.deleteAll();
-
-        return  (args) -> Stream.of(Subscription.getSubscriptions())
-                .peek(subscriptions -> subscriptions.forEach(System.out::println))
-                .forEach(subscriptionRepo::saveAll);
+    private List<Subscription> makeSubscriptions(){
+        List<Subscription> subscriptions = new ArrayList<>();
+        subscriptions.add(new Subscription(makeUsers().get(0), makeUsers().get(2)));
+        subscriptions.add(new Subscription(makeUsers().get(1), makeUsers().get(3)));
+        subscriptions.add(new Subscription(makeUsers().get(0), makeUsers().get(3)));
+        return subscriptions;
     }
-
-    //    @Bean
-//    CommandLineRunner initCommentDatabase(CommentRepository commentRep) {
-//        commentRep.deleteAll();
-//
-//        return  (args) -> Stream.of(makeComments())
-//                .peek(System.out::println)
-//                .forEach(commentRep::save);
-//    }
+    private List<Comment> makeComments(){
+        List<Comment> comments = new ArrayList<>();
+        comments.add(new Comment(makePosts().get(0), makeUsers().get(2), "wonderful"));
+        comments.add(new Comment(makePosts().get(1), makeUsers().get(3), "not bad"));
+        comments.add(new Comment(makePosts().get(0), makeUsers().get(3),"cool"));
+        return comments;
+    }
 }
