@@ -1,7 +1,6 @@
 package kz.attractorschool.microgram.service;
 
 import kz.attractorschool.microgram.dto.PostDTO;
-import kz.attractorschool.microgram.dto.UserDTO;
 import kz.attractorschool.microgram.exception.ResourceNotFoundException;
 import kz.attractorschool.microgram.model.Post;
 import kz.attractorschool.microgram.model.User;
@@ -20,21 +19,23 @@ public class PostService {
     }
 
     public PostDTO addPost(PostDTO postData, String username) {
+
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Can't find user with the name: " + username));
+
         Post post = Post.builder()
                 .id(postData.getId())
+                .user(user)
                 .image(postData.getImage())
                 .description(postData.getDescription())
                 .numOfLikes(postData.getNumOfLikes())
-                .likes(postData.getLikes())
                 .build();
-        User userData = userRepo.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Can't find user with the name: " + username));
-        System.out.println(username + " before " + userData.getPosts().size());
-        userData.addPost(post);
 
-        System.out.println(username + " after " + userData.getPosts().size());
         postRepo.save(post);
         return PostDTO.from(post);
     }
-
+    public boolean deletePost(String postId) {
+        postRepo.deleteById(postId);
+        return true;
+    }
 }

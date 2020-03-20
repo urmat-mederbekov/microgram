@@ -3,6 +3,7 @@ package kz.attractorschool.microgram.service;
 import kz.attractorschool.microgram.dto.UserDTO;
 import kz.attractorschool.microgram.exception.ResourceNotFoundException;
 import kz.attractorschool.microgram.model.User;
+import kz.attractorschool.microgram.repository.PostRepo;
 import kz.attractorschool.microgram.repository.UserRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +14,16 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepo userRepo;
+    private final PostRepo postRepo;
 
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepo userRepo, PostRepo postRepo) {
         this.userRepo = userRepo;
+        this.postRepo = postRepo;
     }
 
     public Slice<UserDTO> findUsers(Pageable pageable) {
         Page<User> slice = userRepo.findAll(pageable);
+        updateNumbers();
         return slice.map(UserDTO::from);
     }
 
@@ -27,6 +31,12 @@ public class UserService {
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Can't find user with the name: " + username));
         return UserDTO.from(user);
+    }
+    public void updateNumbers(){
+        Iterable<User> users = userRepo.findAll();
+        for (User user:users){
+            user.setNumOfPosts(postRepo.countByUserId(user.getId()));
+        }
     }
 
     public UserDTO findUserByEmail(String email) {
@@ -45,6 +55,7 @@ public class UserService {
 
     public Slice<UserDTO> findOtherUsers(Pageable pageable, String username) {
         Page<User> slice = userRepo.findAllByUsernameNotContains(pageable, username);
+
         return slice.map(UserDTO::from);
     }
 
@@ -57,9 +68,6 @@ public class UserService {
                 .numOfPosts(userData.getNumOfPosts())
                 .numOfFollowers(userData.getNumOfFollowers())
                 .numOfFollowings(userData.getNumOfFollowings())
-                .posts(userData.getPosts())
-                .followers(userData.getFollowers())
-                .followings(userData.getFollowings())
                 .build();
 
         userRepo.save(user);
@@ -69,5 +77,4 @@ public class UserService {
         userRepo.deleteByUsername(username);
         return true;
     }
-
 }
