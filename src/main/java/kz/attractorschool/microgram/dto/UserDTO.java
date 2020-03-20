@@ -1,17 +1,14 @@
 package kz.attractorschool.microgram.dto;
 
-import kz.attractorschool.microgram.model.Post;
 import kz.attractorschool.microgram.model.User;
 import lombok.*;
-
-import java.util.List;
 
 @Data
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class UserDTO {
-    public static UserDTO from(User user){
+    public static UserDTO from(User user) {
         return builder()
                 .id(user.getId())
                 .username(user.getUsername())
@@ -20,9 +17,6 @@ public class UserDTO {
                 .numOfPosts(user.getNumOfPosts())
                 .numOfFollowers(user.getNumOfFollowers())
                 .numOfFollowings(user.getNumOfFollowings())
-                .posts(user.getPosts())
-                .followers(user.getFollowers())
-                .followings(user.getFollowings())
                 .build();
     }
 
@@ -33,7 +27,4 @@ public class UserDTO {
     private int numOfPosts;
     private int numOfFollowers;
     private int numOfFollowings;
-    private List<User> followings;
-    private List<User> followers;
-    private List<Post> posts;
 }
