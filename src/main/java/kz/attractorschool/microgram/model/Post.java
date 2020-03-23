@@ -25,8 +25,10 @@ public class Post {
     private LocalDateTime dateTime;
     @Indexed
     private int numOfLikes;
+    private int numOfComments;
     @DBRef
     private User user;
+    private LocalDateTime localDateTime;
 
     public Post(String image, String description, User user) {
         this.id = UUID.randomUUID().toString();
@@ -34,5 +36,6 @@ public class Post {
         this.description = description;
         this.dateTime = LocalDateTime.now();
         this.user = user;
+        this.localDateTime = LocalDateTime.now();
     }
 }

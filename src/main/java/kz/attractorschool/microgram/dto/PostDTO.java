@@ -3,6 +3,8 @@ package kz.attractorschool.microgram.dto;
 import kz.attractorschool.microgram.model.Post;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -14,6 +16,8 @@ public class PostDTO {
                 .image(post.getImage())
                 .description(post.getDescription())
                 .numOfLikes(post.getNumOfLikes())
+                .numOfComments(post.getNumOfComments())
+                .dateTime(post.getDateTime())
                 .build();
     }
 
@@ -21,4 +25,6 @@ public class PostDTO {
     private String image;
     private String description;
     private int numOfLikes;
+    private int numOfComments;
+    private LocalDateTime dateTime;
 }

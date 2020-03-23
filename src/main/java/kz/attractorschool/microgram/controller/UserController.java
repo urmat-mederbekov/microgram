@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @ApiPageable
-    @GetMapping("/other-users/{username}")
+    @GetMapping("/{username}")
     public Slice<UserDTO> findOtherUsers(@ApiIgnore Pageable pageable, @PathVariable String username) {
         return userService.findOtherUsers(pageable, username);
     }
@@ -47,12 +47,12 @@ public class UserController {
         return userService.existsUserByEmail(email);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/add")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO addUser(@RequestBody UserDTO userData) {
         return userService.addUser(userData);
     }
 
-    @DeleteMapping("/delete/{username}")
+    @DeleteMapping("/{username}")
     public ResponseEntity<Void> deleteUser(@PathVariable String username) {
         if (userService.deleteUser(username))
             return ResponseEntity.noContent().build();

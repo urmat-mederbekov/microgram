@@ -15,11 +15,11 @@ public class SubscriptionController {
         this.subscriptionService = subscriptionService;
     }
 
-    @PostMapping("/add/{followerName}/{followingName}")
+    @PostMapping("/{followerName}/{followingName}")
     public SubscriptionDto addUser(@PathVariable String followerName, @PathVariable String followingName) {
         return subscriptionService.addSubscription(followerName, followingName);
     }
-    @DeleteMapping("/delete/{subscriptionId}")
+    @DeleteMapping("/{subscriptionId}")
     public ResponseEntity<Void> deleteUser(@PathVariable String subscriptionId) {
         if (subscriptionService.deleteSubscription(subscriptionId))
             return ResponseEntity.noContent().build();

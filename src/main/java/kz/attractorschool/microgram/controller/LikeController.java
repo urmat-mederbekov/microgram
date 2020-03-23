@@ -15,12 +15,12 @@ public class LikeController {
         this.likeService = likeService;
     }
 
-    @PostMapping("/{postId}/{likerName}/add")
+    @PostMapping("/{postId}/{likerName}")
     public LikeDTO addLike(@PathVariable String postId,
                            @PathVariable String likerName) {
         return likeService.addLike(postId, likerName);
     }
-    @DeleteMapping("/delete/{likeId}")
+    @DeleteMapping("{likeId}")
     public ResponseEntity<Void> deleteUser(@PathVariable String likeId) {
         if (likeService.deleteLike(likeId))
             return ResponseEntity.noContent().build();

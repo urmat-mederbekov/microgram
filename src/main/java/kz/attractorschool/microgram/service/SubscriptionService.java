@@ -15,6 +15,7 @@ import java.util.UUID;
 public class SubscriptionService {
     private final SubscriptionRepo subscriptionRepo;
     private final UserRepo userRepo;
+
     public SubscriptionService(SubscriptionRepo subscriptionRepo, UserRepo userRepo) {
         this.subscriptionRepo = subscriptionRepo;
         this.userRepo = userRepo;

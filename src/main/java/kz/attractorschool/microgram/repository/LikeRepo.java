@@ -4,5 +4,6 @@ import kz.attractorschool.microgram.model.Like;
 import org.springframework.data.repository.CrudRepository;
 
 public interface LikeRepo extends CrudRepository<Like, String> {
+    int countByPostId(String postId);
 }
 

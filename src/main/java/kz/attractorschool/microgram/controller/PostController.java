@@ -16,11 +16,16 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{username}/add")
+    @GetMapping("/{postId}")
+    public PostDTO findPostById(@PathVariable String postId){
+        return postService.findUserById(postId);
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{username}")
     public PostDTO addPost(@RequestBody PostDTO postData, @PathVariable String username) {
         return postService.addPost(postData, username);
     }
-    @DeleteMapping("/delete/{postId}")
+    @DeleteMapping("{postId}")
     public ResponseEntity<Void> deleteUser(@PathVariable String postId) {
         if (postService.deletePost(postId))
             return ResponseEntity.noContent().build();

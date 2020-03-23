@@ -11,7 +11,6 @@ import kz.attractorschool.microgram.repository.UserRepo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class CommentService {
@@ -36,7 +35,7 @@ public class CommentService {
                 .id(commentData.getId())
                 .commenter(user)
                 .post(post)
-                .dateTime(commentData.getDateTime())
+                .dateTime(LocalDateTime.now())
                 .text(commentData.getText())
                 .path(commentData.getPath())
                 .build();
