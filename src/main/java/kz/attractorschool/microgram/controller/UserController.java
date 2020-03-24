@@ -1,24 +1,28 @@
 package kz.attractorschool.microgram.controller;
 
 import kz.attractorschool.microgram.annotations.ApiPageable;
+import kz.attractorschool.microgram.dto.PostDTO;
 import kz.attractorschool.microgram.dto.UserDTO;
+import kz.attractorschool.microgram.model.User;
+import kz.attractorschool.microgram.service.PostService;
 import kz.attractorschool.microgram.service.UserService;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final PostService postService;
 
     @ApiPageable
     @GetMapping
@@ -27,24 +31,35 @@ public class UserController {
     }
 
     @ApiPageable
-    @GetMapping("/{username}")
-    public Slice<UserDTO> findOtherUsers(@ApiIgnore Pageable pageable, @PathVariable String username) {
-        return userService.findOtherUsers(pageable, username);
+    @GetMapping("/user/posts")
+    public Page<PostDTO> findPostsByEmail(@ApiIgnore Pageable pageable, Authentication authentication){
+        User user = (User) authentication.getPrincipal();
+        return postService.findPostsByEmail(pageable, user.getEmail());
     }
 
-    @GetMapping("/username/{username}")
-    public UserDTO findUserByUsername(@PathVariable String username) {
+    @ApiPageable
+    @GetMapping("/others")
+    public Slice<UserDTO> findOtherUsers(@ApiIgnore Pageable pageable, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return userService.findOtherUsers(pageable, user.getUsername());
+    }
+
+    @GetMapping("/username")
+    public UserDTO findUserByUsername(Authentication authentication) {
+        String username = authentication.getName();
         return userService.findUserByUsername(username);
     }
 
-    @GetMapping("/email/{email}")
-    public UserDTO findUserByEmail(@PathVariable String email) {
-        return userService.findUserByEmail(email);
+    @GetMapping("/email/")
+    public UserDTO findUserByEmail(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return userService.findUserByEmail(user.getEmail());
     }
 
-    @GetMapping("/email/exist/{email}")
-    public String existUserByEmail(@PathVariable String email) {
-        return userService.existsUserByEmail(email);
+    @GetMapping("/email/exist")
+    public String existUserByEmail(Authentication authentication){
+    User user = (User) authentication.getPrincipal();
+    return userService.existsUserByEmail(user.getEmail());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -52,11 +67,11 @@ public class UserController {
         return userService.addUser(userData);
     }
 
-    @DeleteMapping("/{username}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
+    @DeleteMapping("/username")
+    public ResponseEntity<Void> deleteUser(Authentication authentication) {
+        String username = authentication.getName();
         if (userService.deleteUser(username))
             return ResponseEntity.noContent().build();
-
         return ResponseEntity.notFound().build();
     }
 }

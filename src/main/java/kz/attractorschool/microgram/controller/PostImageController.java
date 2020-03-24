@@ -2,6 +2,7 @@ package kz.attractorschool.microgram.controller;
 
 import kz.attractorschool.microgram.dto.PostImageDTO;
 import kz.attractorschool.microgram.service.PostImageService;
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,13 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/images")
+@AllArgsConstructor
 public class PostImageController {
 
     private final PostImageService postImageService;
-
-    public PostImageController(PostImageService postImageService) {
-        this.postImageService = postImageService;
-    }
 
     @PostMapping
     public PostImageDTO addPostImage(@RequestParam("file") MultipartFile file) {
