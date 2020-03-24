@@ -6,23 +6,24 @@ import kz.attractorschool.microgram.model.User;
 import kz.attractorschool.microgram.repository.PostRepo;
 import kz.attractorschool.microgram.repository.SubscriptionRepo;
 import kz.attractorschool.microgram.repository.UserRepo;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
-public class UserService {
+@AllArgsConstructor
+public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
     private final PostRepo postRepo;
     private final SubscriptionRepo subscriptionRepo;
-
-    public UserService(UserRepo userRepo, PostRepo postRepo, SubscriptionRepo subscriptionRepo) {
-        this.userRepo = userRepo;
-        this.postRepo = postRepo;
-        this.subscriptionRepo = subscriptionRepo;
-    }
 
     public Slice<UserDTO> findUsers(Pageable pageable) {
         Page<User> slice = userRepo.findAll(pageable);
@@ -60,7 +61,6 @@ public class UserService {
 
     public UserDTO addUser(UserDTO userData) {
         User user = User.builder()
-                .id(userData.getId())
                 .username(userData.getUsername())
                 .email(userData.getEmail())
                 .password(userData.getPassword())
@@ -78,14 +78,22 @@ public class UserService {
     }
     private void updateNumbers(Iterable<User> users){
         users.forEach(user -> {
-            user.setNumOfPosts(postRepo.countByUserId(user.getId()));
-            user.setNumOfFollowers(subscriptionRepo.countByFollowingId(user.getId()));
-            user.setNumOfFollowings(subscriptionRepo.countByFollowerId(user.getId()));
+            user.setNumOfPosts(postRepo.countByUserEmail(user.getEmail()));
+            user.setNumOfFollowers(subscriptionRepo.countByFollowingEmail(user.getEmail()));
+            user.setNumOfFollowings(subscriptionRepo.countByFollowerEmail(user.getEmail()));
         });
     }
     private void updateNumbers(User user){
-        user.setNumOfPosts(postRepo.countByUserId(user.getId()));
-        user.setNumOfFollowers(subscriptionRepo.countByFollowingId(user.getId()));
-        user.setNumOfFollowings(subscriptionRepo.countByFollowerId(user.getId()));
+        user.setNumOfPosts(postRepo.countByUserEmail(user.getEmail()));
+        user.setNumOfFollowers(subscriptionRepo.countByFollowingEmail(user.getEmail()));
+        user.setNumOfFollowings(subscriptionRepo.countByFollowerEmail(user.getEmail()));
+    }
+
+    @Override
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> optUser = userRepo.findByEmail(email);
+        if(optUser.isEmpty())
+            throw new UsernameNotFoundException("Not found");
+        return optUser.get();
     }
 }

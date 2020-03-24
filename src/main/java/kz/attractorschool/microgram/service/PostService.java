@@ -8,6 +8,8 @@ import kz.attractorschool.microgram.repository.CommentRepo;
 import kz.attractorschool.microgram.repository.LikeRepo;
 import kz.attractorschool.microgram.repository.PostRepo;
 import kz.attractorschool.microgram.repository.UserRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,6 +26,17 @@ public class PostService {
         this.userRepo = userRepo;
         this.likeRepo = likeRepo;
         this.commentRepo = commentRepo;
+    }
+
+    public Page<PostDTO> findPosts(Pageable pageable){
+        Page<Post> posts = postRepo.findAll(pageable);
+        updateNumbers(posts);
+        return  posts.map(PostDTO::from);
+    }
+    public Page<PostDTO> findPostsByEmail(Pageable pageable, String email){
+        Page<Post> posts = postRepo.findAllByUserEmail(pageable, email);
+        updateNumbers(posts);
+        return  posts.map(PostDTO::from);
     }
     public PostDTO findUserById(String postId) {
         Post post = postRepo.findById(postId)
@@ -56,5 +69,11 @@ public class PostService {
     private void updateNumbers(Post post){
         post.setNumOfLikes(likeRepo.countByPostId(post.getId()));
         post.setNumOfComments(commentRepo.countByPostId(post.getId()));
+    }
+    private void updateNumbers(Iterable<Post> posts){
+        posts.forEach(post -> {
+            post.setNumOfLikes(likeRepo.countByPostId(post.getId()));
+            post.setNumOfComments(commentRepo.countByPostId(post.getId()));
+        });
     }
 }

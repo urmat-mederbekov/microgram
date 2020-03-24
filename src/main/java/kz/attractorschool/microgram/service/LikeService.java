@@ -8,6 +8,8 @@ import kz.attractorschool.microgram.model.User;
 import kz.attractorschool.microgram.repository.LikeRepo;
 import kz.attractorschool.microgram.repository.PostRepo;
 import kz.attractorschool.microgram.repository.UserRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,6 +25,11 @@ public class LikeService {
         this.likeRepo = likeRepo;
         this.postRepo = postRepo;
         this.userRepo = userRepo;
+    }
+
+    public Page<LikeDTO> findLikesByPostId(Pageable pageable, String postId){
+        Page<Like> likes = likeRepo.findAllByPostId(pageable, postId);
+        return likes.map(LikeDTO::from);
     }
 
     public LikeDTO addLike(String postId, String likerUsername) {

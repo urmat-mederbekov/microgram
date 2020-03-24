@@ -8,21 +8,27 @@ import kz.attractorschool.microgram.model.User;
 import kz.attractorschool.microgram.repository.CommentRepo;
 import kz.attractorschool.microgram.repository.PostRepo;
 import kz.attractorschool.microgram.repository.UserRepo;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
+@AllArgsConstructor
 public class CommentService {
+
     private final CommentRepo commentRepo;
     private final PostRepo postRepo;
     private final UserRepo userRepo;
 
-    public CommentService(CommentRepo commentRepo, PostRepo postRepo, UserRepo userRepo) {
-        this.commentRepo = commentRepo;
-        this.postRepo = postRepo;
-        this.userRepo = userRepo;
+    public Slice<CommentDTO> findCommentByPostId(Pageable pageable, String postId){
+
+        Slice<Comment> comments = commentRepo.findAllByPostId(pageable, postId);
+        return comments.map(CommentDTO::from);
     }
+
     public CommentDTO addComment(CommentDTO commentData, String postId, String commenterUsername) {
 
         Post post = postRepo.findById(postId)
@@ -44,6 +50,7 @@ public class CommentService {
 
         return CommentDTO.from(comment);
     }
+
     public boolean deleteComment(String commentId) {
         commentRepo.deleteById(commentId);
         return true;
