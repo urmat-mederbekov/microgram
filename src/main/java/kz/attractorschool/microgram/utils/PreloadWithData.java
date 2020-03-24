@@ -2,22 +2,21 @@ package kz.attractorschool.microgram.utils;
 
 import kz.attractorschool.microgram.model.*;
 import kz.attractorschool.microgram.repository.*;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 @Configuration
+@AllArgsConstructor
 public class PreloadWithData {
 
-    List<User> users = makeUsers();
-    List<Post> posts = makePosts();
-    List<Comment> comments = makeComments();
-    List<Subscription> subscriptions = makeSubscriptions();
-    List<Like> likes = makeLikes();
+    private final PasswordEncoder encoder;
 
     @Bean
     CommandLineRunner initDatabase(UserRepo userRep, PostRepo postRep, CommentRepo commentRepo,
@@ -30,82 +29,48 @@ public class PreloadWithData {
             subscriptionRepo.deleteAll();
             commentRepo.deleteAll();
 
-            Stream.of(getComments())
+            List<User> userList = new ArrayList<>();
+            userList.add(new User("thanos", "thanos@gmail.com", encoder.encode("thanos")));
+            userList.add(new User("loki", "loki@gmail.com", encoder.encode("loki")));
+            userList.add(new User("thor", "thor@gmail.com", encoder.encode("thor")));
+            userList.add(new User("batman", "batman@gmail.com", encoder.encode("batman")));
+            userList.add(new User("superman", "superman@gmail.com", encoder.encode("superman")));
+
+            List<Post> postList = new ArrayList<>();
+            postList.add(new Post("", Generator.makeDescription(), userList.get(1)));
+            postList.add(new Post("", Generator.makeDescription(), userList.get(0)));
+            postList.add(new Post("", Generator.makeDescription(), userList.get(4)));
+
+            List<Like> likeList = new ArrayList<>();
+            likeList.add(new Like(userList.get(2), postList.get(1)));
+            likeList.add(new Like(userList.get(3), postList.get(2)));
+            likeList.add(new Like(userList.get(3), postList.get(1)));
+
+            List<Subscription> subscriptionList = new ArrayList<>();
+            subscriptionList.add(new Subscription(userList.get(0), userList.get(2)));
+            subscriptionList.add(new Subscription(userList.get(1), userList.get(3)));
+            subscriptionList.add(new Subscription(userList.get(0), userList.get(3)));
+
+            List<Comment> commentList = new ArrayList<>();
+            commentList.add(new Comment(postList.get(0), userList.get(2), "wonderful"));
+            commentList.add(new Comment(postList.get(1), userList.get(3), "not bad"));
+            commentList.add(new Comment(postList.get(0), userList.get(3),"cool"));
+
+            Stream.of(commentList)
                     .peek(comments -> comments.forEach(System.out::println))
                     .forEach(commentRepo::saveAll);
-            Stream.of(getSubscriptions())
+            Stream.of(subscriptionList)
                     .peek(subscriptions -> subscriptions.forEach(System.out::println))
                     .forEach(subscriptionRepo::saveAll);
-            Stream.of(getLikes())
+            Stream.of(likeList)
                     .peek(likes -> likes.forEach(System.out::println))
                     .forEach(likeRepo::saveAll);
-            Stream.of(getUsers())
+            Stream.of(userList)
                     .peek(users -> users.forEach(System.out::println))
                     .forEach(userRep::saveAll);
-            Stream.of((getPosts()))
+            Stream.of((postList))
                     .peek(posts -> posts.forEach(System.out::println))
                     .forEach(postRep::saveAll);
         };
     }
-
-    private List<User> makeUsers() {
-        List<User> users = new ArrayList<>();
-        users.add(new User("thanos", "thanos@gmail.com", "thanos"));
-        users.add(new User("loki", "loki@gmail.com", "loki"));
-        users.add(new User("thor", "thor@gmail.com", "thor"));
-        users.add(new User("batman", "batman@gmail.com", "batman"));
-        users.add(new User("superman", "superman@gmail.com", "superman"));
-        return users;
-    }
-    private List<User> getUsers(){
-        return users;
-    }
-
-    private List<Post> makePosts() {
-        List<Post> posts = new ArrayList<>();
-        posts.add(new Post("", Generator.makeDescription(), getUsers().get(1)));
-        posts.add(new Post("", Generator.makeDescription(), getUsers().get(0)));
-        posts.add(new Post("", Generator.makeDescription(), getUsers().get(4)));
-        return posts;
-    }
-
-    private List<Post> getPosts(){
-        return posts;
-    }
-
-    private List<Like> makeLikes() {
-        List<Like> likes = new ArrayList<>();
-        likes.add(new Like(getUsers().get(2), getPosts().get(1)));
-        likes.add(new Like(getUsers().get(3), getPosts().get(2)));
-        likes.add(new Like(getUsers().get(3), getPosts().get(1)));
-        return likes;
-    }
-
-    private List<Like> getLikes(){
-        return likes;
-    }
-
-    private List<Subscription> makeSubscriptions(){
-        List<Subscription> subscriptions = new ArrayList<>();
-        subscriptions.add(new Subscription(getUsers().get(0), getUsers().get(2)));
-        subscriptions.add(new Subscription(getUsers().get(1), getUsers().get(3)));
-        subscriptions.add(new Subscription(getUsers().get(0), getUsers().get(3)));
-        return subscriptions;
-    }
-
-    private List<Subscription> getSubscriptions(){
-        return subscriptions;
-    }
-
-    private List<Comment> makeComments(){
-        List<Comment> comments = new ArrayList<>();
-        comments.add(new Comment(getPosts().get(0), getUsers().get(2), "wonderful"));
-        comments.add(new Comment(getPosts().get(1), getUsers().get(3), "not bad"));
-        comments.add(new Comment(getPosts().get(0), getUsers().get(3),"cool"));
-        return comments;
-    }
-    private List<Comment> getComments(){
-        return comments;
-    }
-
 }
