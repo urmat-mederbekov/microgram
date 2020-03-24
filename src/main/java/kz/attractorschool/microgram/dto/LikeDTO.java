@@ -1,6 +1,7 @@
 package kz.attractorschool.microgram.dto;
 
 import kz.attractorschool.microgram.model.Like;
+import kz.attractorschool.microgram.model.Post;
 import kz.attractorschool.microgram.model.User;
 import lombok.*;
 
@@ -15,11 +16,13 @@ public class LikeDTO {
         return builder()
                 .id(like.getId())
                 .liker(like.getLiker())
+                .post(like.getPost())
                 .dateTime(like.getDateTime())
                 .build();
     }
 
     private String id;
     private User liker;
+    private Post post;
     private LocalDateTime dateTime;
 }
