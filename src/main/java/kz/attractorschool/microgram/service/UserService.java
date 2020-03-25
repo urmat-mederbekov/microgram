@@ -1,7 +1,11 @@
 package kz.attractorschool.microgram.service;
 
+import javafx.geometry.Pos;
+import kz.attractorschool.microgram.dto.PostDTO;
 import kz.attractorschool.microgram.dto.UserDTO;
 import kz.attractorschool.microgram.exception.ResourceNotFoundException;
+import kz.attractorschool.microgram.model.Post;
+import kz.attractorschool.microgram.model.Subscription;
 import kz.attractorschool.microgram.model.User;
 import kz.attractorschool.microgram.repository.PostRepo;
 import kz.attractorschool.microgram.repository.SubscriptionRepo;
@@ -10,12 +14,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -58,6 +65,44 @@ public class UserService implements UserDetailsService {
         updateNumbers(slice);
         return slice.map(UserDTO::from);
     }
+    public List<PostDTO> findOtherPosts(Pageable pageable, String username){
+        Page<User> users = userRepo.findAllByUsernameNotContains(pageable, username);
+        Page<Post> posts = postRepo.findAll(pageable);
+
+        List<Post> newPosts = new ArrayList<>();
+        for (User user : users) {
+            for (Post post: posts) {
+                if(user.getEmail().equals(post.getUser().getEmail())){
+                    newPosts.add(post);
+                }
+            }
+        }
+
+        return  newPosts.stream().map(PostDTO::from).collect(Collectors.toList());
+    }
+    public List<PostDTO> findPostsBasedFollowings(Pageable pageable, String email){
+
+        Page<User> users = userRepo.findAll(pageable);
+        Page<Post> posts = postRepo.findAll(pageable);
+        Page<Subscription> subscriptions = subscriptionRepo.findAllByFollowerEmail(pageable, email);
+
+        List<Post> newPosts = new ArrayList<>();
+
+        for (User user : users) {
+            for (Post post: posts) {
+                for (Subscription subscription : subscriptions) {
+                    if (user.getEmail().equals(post.getUser().getEmail())
+                            && post.getUser().getEmail().equals(subscription.getFollowing().getEmail()))
+                            {
+                        newPosts.add(post);
+                    }
+                }
+            }
+        }
+
+        return  newPosts.stream().map(PostDTO::from).collect(Collectors.toList());
+    }
+
 
     public UserDTO addUser(UserDTO userData) {
         User user = User.builder()
