@@ -1,6 +1,6 @@
 package kz.attractorschool.microgram.controller;
 
-import kz.attractorschool.microgram.dto.SubscriptionDto;
+import kz.attractorschool.microgram.dto.SubscriptionDTO;
 import kz.attractorschool.microgram.service.SubscriptionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
     @PostMapping("/{followingName}")
-    public SubscriptionDto subscribe(Authentication authentication, @PathVariable String followingName) {
+    public SubscriptionDTO subscribe(Authentication authentication, @PathVariable String followingName) {
         String followerName = authentication.getName();
         return subscriptionService.addSubscription(followerName, followingName);
     }
