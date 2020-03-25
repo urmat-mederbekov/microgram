@@ -25,4 +25,5 @@ public class UserDTO {
     private int numOfPosts;
     private int numOfFollowers;
     private int numOfFollowings;
+
 }
