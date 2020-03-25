@@ -16,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
@@ -42,6 +44,16 @@ public class UserController {
     public Slice<UserDTO> findOtherUsers(@ApiIgnore Pageable pageable, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return userService.findOtherUsers(pageable, user.getUsername());
+    }
+    @GetMapping("/explore")
+    public List<PostDTO> findOtherPosts(@ApiIgnore Pageable pageable, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return userService.findOtherPosts(pageable, user.getUsername());
+    }
+    @GetMapping("/story")
+    public List<PostDTO> findPostsBasedFollowings(@ApiIgnore Pageable pageable, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return userService.findPostsBasedFollowings(pageable, user.getEmail());
     }
 
     @GetMapping("/username")
