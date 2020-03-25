@@ -22,17 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception{
 
         http.authorizeRequests()
-                .antMatchers("/likes/**")
-                .fullyAuthenticated()
-                .antMatchers("/posts/**")
-                .fullyAuthenticated()
-                .antMatchers("/subscriptions/**")
-                .fullyAuthenticated()
-                .antMatchers("/comments/**")
-                .fullyAuthenticated()
-                .antMatchers("/images/**")
-                .fullyAuthenticated()
-                .antMatchers("/users/**")
+                .antMatchers("/likes/**" , "/subscriptions/**", "/comments/**",
+                        "/images/**", "/users/**", "/posts/*", "/posts/*/*")
                 .fullyAuthenticated();
 
         http.authorizeRequests()
