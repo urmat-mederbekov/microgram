@@ -82,23 +82,19 @@ public class UserService implements UserDetailsService {
     }
     public List<PostDTO> findPostsBasedFollowings(Pageable pageable, String email){
 
-        Page<User> users = userRepo.findAll(pageable);
         Page<Post> posts = postRepo.findAll(pageable);
         Page<Subscription> subscriptions = subscriptionRepo.findAllByFollowerEmail(pageable, email);
 
         List<Post> newPosts = new ArrayList<>();
 
-        for (User user : users) {
-            for (Post post: posts) {
-                for (Subscription subscription : subscriptions) {
-                    if (user.getEmail().equals(post.getUser().getEmail())
-                            && post.getUser().getEmail().equals(subscription.getFollowing().getEmail()))
-                            {
-                        newPosts.add(post);
-                    }
+        for (Post post: posts) {
+            for (Subscription subscription : subscriptions) {
+                if (post.getUser().getEmail().equals(subscription.getFollowing().getEmail())) {
+                    newPosts.add(post);
                 }
             }
         }
+
 
         return  newPosts.stream().map(PostDTO::from).collect(Collectors.toList());
     }
