@@ -20,7 +20,8 @@ public class Post {
 
     @Id
     private String id;
-    private String image;
+    @DBRef
+    private PostImage image;
     private String description;
     private LocalDateTime dateTime;
     @Indexed
@@ -30,9 +31,8 @@ public class Post {
     private User user;
     private LocalDateTime localDateTime;
 
-    public Post(String image, String description, User user) {
+    public Post(String description, User user) {
         this.id = UUID.randomUUID().toString();
-        this.image = image;
         this.description = description;
         this.dateTime = LocalDateTime.now();
         this.user = user;

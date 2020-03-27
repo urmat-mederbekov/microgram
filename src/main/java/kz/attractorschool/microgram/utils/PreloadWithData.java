@@ -37,9 +37,9 @@ public class PreloadWithData {
             userList.add(new User("superman", "superman@gmail.com", encoder.encode("superman")));
 
             List<Post> postList = new ArrayList<>();
-            postList.add(new Post("", Generator.makeDescription(), userList.get(1)));
-            postList.add(new Post("", Generator.makeDescription(), userList.get(0)));
-            postList.add(new Post("", Generator.makeDescription(), userList.get(4)));
+            postList.add(new Post(Generator.makeDescription(), userList.get(1)));
+            postList.add(new Post(Generator.makeDescription(), userList.get(0)));
+            postList.add(new Post(Generator.makeDescription(), userList.get(4)));
 
             List<Like> likeList = new ArrayList<>();
             likeList.add(new Like(userList.get(2), postList.get(1)));
