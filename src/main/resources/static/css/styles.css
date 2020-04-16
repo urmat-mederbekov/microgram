@@ -1,0 +1,31 @@
+.no-scroll {
+  overflow-x: hidden;
+}
+.buttons {
+  overflow-x: visible;
+}
+.page-splash {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.button{
+  background-color: transparent;
+  font-weight: 100;
+  border: none;
+}
+.imageBut{
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+/* .commentForm{
+  display: none;
+} */

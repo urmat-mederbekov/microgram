@@ -55,11 +55,12 @@ public class PostService {
         Post post = Post.builder()
                 .id(postData.getId())
                 .user(user)
-                .image(postImage)
+//                .image(postImage)
+                .image(postData.getImage())
                 .description(postData.getDescription())
                 .numOfLikes(postData.getNumOfLikes())
                 .numOfComments(postData.getNumOfComments())
-                .localDateTime(LocalDateTime.now())
+                .dateTime(LocalDateTime.now())
                 .build();
 
         postRepo.save(post);

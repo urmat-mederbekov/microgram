@@ -20,8 +20,9 @@ public class Post {
 
     @Id
     private String id;
-    @DBRef
-    private PostImage image;
+//    @DBRef
+//    private PostImage image;
+    private String image;
     private String description;
     private LocalDateTime dateTime;
     @Indexed
@@ -29,13 +30,14 @@ public class Post {
     private int numOfComments;
     @DBRef
     private User user;
-    private LocalDateTime localDateTime;
+//    private LocalDateTime localDateTime;
 
-    public Post(String description, User user) {
+    public Post(String description, User user, String image) {
         this.id = UUID.randomUUID().toString();
         this.description = description;
         this.dateTime = LocalDateTime.now();
         this.user = user;
-        this.localDateTime = LocalDateTime.now();
+//        this.localDateTime = LocalDateTime.now();
+        this.image = image;
     }
 }

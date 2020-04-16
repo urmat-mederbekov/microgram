@@ -23,6 +23,11 @@ public class CommentService {
     private final PostRepo postRepo;
     private final UserRepo userRepo;
 
+    public Slice<CommentDTO> findAll(Pageable pageable){
+        Slice<Comment> comments = commentRepo.findAll(pageable);
+        return comments.map(CommentDTO::from);
+    }
+
     public Slice<CommentDTO> findCommentByPostId(Pageable pageable, String postId){
 
         Slice<Comment> comments = commentRepo.findAllByPostId(pageable, postId);

@@ -11,17 +11,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class PostDTO {
     public static PostDTO from(Post post){
-        String postImageId = post.getImage() == null
-                ? "-no-image-id"
-                : post.getImage().getId();
+//        String postImageId = post.getImage() == null
+//                ? "-no-image-id"
+//                : post.getImage().getId();
 
         return builder()
                 .id(post.getId())
-                .image(postImageId)
+//                .image(postImageId)
                 .description(post.getDescription())
                 .numOfLikes(post.getNumOfLikes())
                 .numOfComments(post.getNumOfComments())
                 .dateTime(post.getDateTime())
+                .image(post.getImage())
                 .build();
     }
 
