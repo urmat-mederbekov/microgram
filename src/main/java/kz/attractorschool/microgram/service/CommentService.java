@@ -13,8 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Service
 @AllArgsConstructor
 public class CommentService {
@@ -34,7 +32,7 @@ public class CommentService {
         return comments.map(CommentDTO::from);
     }
 
-    public CommentDTO addComment(CommentDTO commentData, String postId, String commenterUsername) {
+    public CommentDTO comment(CommentDTO commentData, String postId, String commenterUsername) {
 
         Post post = postRepo.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Can't find user with the id: " + postId));
@@ -43,12 +41,12 @@ public class CommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Can't find user with the name: " + commenterUsername));
 
         Comment comment = Comment.builder()
-                .id(commentData.getId())
                 .commenter(user)
                 .post(post)
-                .dateTime(LocalDateTime.now())
                 .text(commentData.getText())
                 .path(commentData.getPath())
+                .dateTime(commentData.getDateTime())
+                .id(commentData.getId())
                 .build();
 
         commentRepo.save(comment);

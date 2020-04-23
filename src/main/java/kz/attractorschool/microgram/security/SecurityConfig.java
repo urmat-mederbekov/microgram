@@ -22,13 +22,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception{
 
         http.authorizeRequests()
-                .antMatchers("/likes/**" , "/subscriptions/**", "/comments/**",
-                        "/images/**", "/users/**", "/posts/*", "/posts/*/*")
-                .fullyAuthenticated();
+                .antMatchers("/likes/**" , "/subscriptions/**", "/comments/*", "/comments/*/*",
+                        "/images/**", "/users/*", "/users/*/*", "/posts/*")
+                .authenticated();
 
         http.authorizeRequests()
-                .antMatchers("/posts/")
-                .permitAll()
                 .anyRequest()
                 .permitAll();
 // Настраиваем хранение сессий. Не храним сессию.
@@ -39,6 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 // Так как мы авторизуемся через заголовок запроса, то
 // форма входа на сайт и выхода с него нам тоже не нужны.
         http.formLogin().disable().logout().disable();
+//        http.formLogin().loginPage("/registration")
+//                .loginProcessingUrl("/perform_login").permitAll();
 // Так как у нас REST сервис, нам не нужна защита от CSRF
         http.csrf().disable();
     }

@@ -6,27 +6,28 @@ import kz.attractorschool.microgram.model.Post;
 import kz.attractorschool.microgram.model.PostImage;
 import kz.attractorschool.microgram.model.User;
 import kz.attractorschool.microgram.repository.*;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class PostService {
+
     private final PostRepo postRepo;
     private final UserRepo userRepo;
     private final LikeRepo likeRepo;
     private final CommentRepo commentRepo;
     private final PostImageRepo postImageRepo;
-
-    public PostService(PostRepo postRepo, UserRepo userRepo, LikeRepo likeRepo, CommentRepo commentRepo, PostImageRepo postImageRepo) {
-        this.postRepo = postRepo;
-        this.userRepo = userRepo;
-        this.likeRepo = likeRepo;
-        this.commentRepo = commentRepo;
-        this.postImageRepo = postImageRepo;
-    }
 
     public Page<PostDTO> findPosts(Pageable pageable){
         Page<Post> posts = postRepo.findAll(pageable);
@@ -44,6 +45,33 @@ public class PostService {
         updateNumbers(post);
         return PostDTO.from(post);
     }
+    public PostDTO post(MultipartFile poster,
+                        String description,
+                        Authentication authentication){
+        User user = (User) authentication.getPrincipal();
+        String path = "../images/";
+        File posterFile = new File(path + poster.getOriginalFilename());
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(posterFile);
+            outputStream.write(poster.getBytes());
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Post post = Post.builder()
+                .user(user)
+                .dateTime(LocalDateTime.now())
+                .id(UUID.randomUUID().toString())
+                .image(poster.getOriginalFilename())
+                .description(description)
+                .build();
+
+        postRepo.save(post);
+        return PostDTO.from(post);
+    }
+
     public PostDTO addPost(PostDTO postData, String username) {
 
         User user = userRepo.findByUsername(username)
@@ -53,19 +81,19 @@ public class PostService {
                 .orElseThrow(() -> new ResourceNotFoundException("Post Image with " + postData.getImage() + " doesn't exists!"));
 
         Post post = Post.builder()
-                .id(postData.getId())
                 .user(user)
 //                .image(postImage)
                 .image(postData.getImage())
+                .dateTime(postData.getDateTime())
+                .id(postData.getId())
                 .description(postData.getDescription())
-                .numOfLikes(postData.getNumOfLikes())
-                .numOfComments(postData.getNumOfComments())
-                .dateTime(LocalDateTime.now())
                 .build();
 
         postRepo.save(post);
         return PostDTO.from(post);
     }
+
+
     public boolean deletePost(String postId) {
         postRepo.deleteById(postId);
         return true;

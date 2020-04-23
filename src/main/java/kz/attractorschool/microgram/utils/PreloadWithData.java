@@ -30,11 +30,11 @@ public class PreloadWithData {
             commentRepo.deleteAll();
 
             List<User> userList = new ArrayList<>();
-            userList.add(new User("thanos", "thanos@gmail.com", encoder.encode("thanos")));
-            userList.add(new User("loki", "loki@gmail.com", encoder.encode("loki")));
-            userList.add(new User("thor", "thor@gmail.com", encoder.encode("thor")));
-            userList.add(new User("batman", "batman@gmail.com", encoder.encode("batman")));
-            userList.add(new User("superman", "superman@gmail.com", encoder.encode("superman")));
+            userList.add(new User("Thanos","thanos", "thanos@gmail.com", encoder.encode("thanos")));
+            userList.add(new User("Loki Laufeyson","loki", "loki@gmail.com", encoder.encode("loki")));
+            userList.add(new User("Thor Odinson","thor", "thor@gmail.com", encoder.encode("thor")));
+            userList.add(new User("Bruce Wayne","batman", "batman@gmail.com", encoder.encode("batman")));
+            userList.add(new User("Clark Kent","superman", "superman@gmail.com", encoder.encode("superman")));
 
             List<Post> postList = new ArrayList<>();
             postList.add(new Post(Generator.makeDescription(), userList.get(1), "uchiha.jpg"));
@@ -43,7 +43,7 @@ public class PreloadWithData {
 
             List<Like> likeList = new ArrayList<>();
             likeList.add(new Like(userList.get(2), postList.get(1)));
-            likeList.add(new Like(userList.get(3), postList.get(2)));
+            likeList.add(new Like(userList.get(1), postList.get(2)));
             likeList.add(new Like(userList.get(3), postList.get(1)));
 
             List<Subscription> subscriptionList = new ArrayList<>();

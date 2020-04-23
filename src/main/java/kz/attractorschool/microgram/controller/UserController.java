@@ -70,13 +70,13 @@ public class UserController {
 
     @GetMapping("/email/exist")
     public String existUserByEmail(Authentication authentication){
-    User user = (User) authentication.getPrincipal();
-    return userService.existsUserByEmail(user.getEmail());
+        User user = (User) authentication.getPrincipal();
+        return userService.existsUserByEmail(user.getEmail());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO addUser(@RequestBody UserDTO userData) {
-        return userService.addUser(userData);
+    public UserDTO register(@RequestBody UserDTO userData) {
+        return userService.register(userData);
     }
 
     @DeleteMapping("/username")

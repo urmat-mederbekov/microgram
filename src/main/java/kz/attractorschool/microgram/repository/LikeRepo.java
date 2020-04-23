@@ -8,5 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface LikeRepo extends PagingAndSortingRepository<Like, String> {
     int countByPostId(String postId);
     Page<Like> findAllByPostId(Pageable pageable, String postId);
+    Page<Like> findAllByLikerEmail(Pageable pageable, String email);
 }
 

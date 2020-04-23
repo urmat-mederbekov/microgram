@@ -10,6 +10,7 @@ import lombok.*;
 public class UserDTO {
     public static UserDTO from(User user) {
         return builder()
+                .fullName(user.getFullName())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
@@ -19,6 +20,7 @@ public class UserDTO {
                 .build();
     }
 
+    private String fullName;
     private String username;
     private String email;
     private String password;

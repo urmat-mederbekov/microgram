@@ -17,8 +17,9 @@ import java.util.List;
 @Document(collection = "users")
 @Data
 public class  User implements UserDetails {
-    public static final User EMPTY = new User("No one", "none@gmail.com", "nothing");
+    public static final User EMPTY = new User("No one","No one", "none@gmail.com", "nothing");
 
+    private String fullName;
     @Indexed
     private String username;
     @Id
@@ -28,7 +29,8 @@ public class  User implements UserDetails {
     private int numOfFollowers;
     private int numOfFollowings;
 
-    public User(String username, String email, String password) {
+    public User(String fullName, String username, String email, String password) {
+        this.fullName = fullName;
         this.username = username;
         this.email = email;
         this.password = password;

@@ -28,10 +28,10 @@ public class SubscriptionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Can't find user with the name: " + followingName));
 
         Subscription subscription =  Subscription.builder()
-                .id(UUID.randomUUID().toString())
-                .dateTime(LocalDateTime.now())
                 .follower(follower)
                 .following(following)
+                .dateTime(LocalDateTime.now())
+                .id(UUID.randomUUID().toString())
                 .build();
 
         subscriptionRepo.save(subscription);

@@ -1,6 +1,5 @@
 package kz.attractorschool.microgram.service;
 
-import javafx.geometry.Pos;
 import kz.attractorschool.microgram.dto.PostDTO;
 import kz.attractorschool.microgram.dto.UserDTO;
 import kz.attractorschool.microgram.exception.ResourceNotFoundException;
@@ -14,9 +13,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ public class UserService implements UserDetailsService {
     private final UserRepo userRepo;
     private final PostRepo postRepo;
     private final SubscriptionRepo subscriptionRepo;
+    private final PasswordEncoder encoder;
 
     public Slice<UserDTO> findUsers(Pageable pageable) {
         Page<User> slice = userRepo.findAll(pageable);
@@ -84,7 +84,6 @@ public class UserService implements UserDetailsService {
 
         Page<Post> posts = postRepo.findAll(pageable);
         Page<Subscription> subscriptions = subscriptionRepo.findAllByFollowerEmail(pageable, email);
-
         List<Post> newPosts = new ArrayList<>();
 
         for (Post post: posts) {
@@ -98,21 +97,28 @@ public class UserService implements UserDetailsService {
 
         return  newPosts.stream().map(PostDTO::from).collect(Collectors.toList());
     }
-
-
-    public UserDTO addUser(UserDTO userData) {
+    public UserDTO register(UserDTO userData) {
         User user = User.builder()
+                .fullName(userData.getFullName())
                 .username(userData.getUsername())
                 .email(userData.getEmail())
-                .password(userData.getPassword())
-                .numOfPosts(userData.getNumOfPosts())
-                .numOfFollowers(userData.getNumOfFollowers())
-                .numOfFollowings(userData.getNumOfFollowings())
+                .password(encoder.encode(userData.getPassword()))
                 .build();
 
         userRepo.save(user);
         return UserDTO.from(user);
     }
+//    public UserDTO login(UserDTO userData) {
+//
+//
+//        if(userRepo.existsByEmailAndPassword(userData.getEmail(), encoder.encode(userData.getPassword())){
+//
+//        }else {
+//            new ResourceNotFoundException("Password or email is incorrect");
+//        }
+//
+//        return UserDTO.from();
+//    }
     public boolean deleteUser(String username) {
         userRepo.deleteByUsername(username);
         return true;
@@ -134,7 +140,7 @@ public class UserService implements UserDetailsService {
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> optUser = userRepo.findByEmail(email);
         if(optUser.isEmpty())
-            throw new UsernameNotFoundException("Not found");
+            throw new UsernameNotFoundException("User doesn't exist");
         return optUser.get();
     }
 }

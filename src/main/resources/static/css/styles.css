@@ -1,9 +1,9 @@
 .no-scroll {
-  overflow-x: hidden;
+  overflow: hidden;
 }
-.buttons {
-  overflow-x: visible;
-}
+/*.buttons {*/
+/*  overflow: visible;*/
+/*}*/
 .page-splash {
   position: absolute;
   top: 0;

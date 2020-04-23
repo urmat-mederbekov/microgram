@@ -30,14 +30,12 @@ public class Post {
     private int numOfComments;
     @DBRef
     private User user;
-//    private LocalDateTime localDateTime;
 
     public Post(String description, User user, String image) {
         this.id = UUID.randomUUID().toString();
         this.description = description;
         this.dateTime = LocalDateTime.now();
         this.user = user;
-//        this.localDateTime = LocalDateTime.now();
         this.image = image;
     }
 }
